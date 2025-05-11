@@ -1,0 +1,51 @@
+<div class="container mt-4">
+  <h2>Gerenciar Ingressos</h2>
+
+  <form [formGroup]="ingressoForm" (ngSubmit)="salvarIngresso()" class="mb-4">
+    <div class="row">
+      <div class="col-md-3">
+        <label>Tipo</label>
+        <input type="text" class="form-control" formControlName="tipo" required>
+      </div>
+      <div class="col-md-3">
+        <label>Preço</label>
+        <input type="number" class="form-control" formControlName="preco" required>
+      </div>
+      <div class="col-md-3">
+        <label>Quantidade</label>
+        <input type="number" class="form-control" formControlName="quantidade" required>
+      </div>
+      <div class="col-md-3">
+        <label>Evento</label>
+        <select class="form-select" formControlName="eventoId" required>
+          <option *ngFor="let evento of eventos" [value]="evento.id">{{ evento.nome }}</option>
+        </select>
+      </div>
+    </div>
+    <button class="btn btn-success mt-3">Salvar</button>
+  </form>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>Preço</th>
+        <th>Quantidade</th>
+        <th>Evento</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let ingresso of ingressos">
+        <td>{{ ingresso.tipo }}</td>
+        <td>R$ {{ ingresso.preco }}</td>
+        <td>{{ ingresso.quantidade }}</td>
+        <td>{{ ingresso.eventoId }}</td>
+        <td>
+          <button class="btn btn-sm btn-info" (click)="editarIngresso(ingresso)">Editar</button>
+          <button class="btn btn-sm btn-danger" (click)="excluirIngresso(ingresso.id!)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

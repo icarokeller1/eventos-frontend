@@ -1,0 +1,66 @@
+<div class="container mt-4">
+  <h2>Gerenciar Eventos</h2>
+
+  <form [formGroup]="eventoForm" (ngSubmit)="salvarEvento()" enctype="multipart/form-data" class="mb-4">
+    <div class="row">
+      <div class="col-md-6">
+        <label>Nome</label>
+        <input type="text" class="form-control" formControlName="nome" required>
+      </div>
+      <div class="col-md-6">
+        <label>Data</label>
+        <input type="date" class="form-control" formControlName="data" required>
+      </div>
+      <div class="col-md-6">
+        <label>Local</label>
+        <input type="text" class="form-control" formControlName="local" required>
+      </div>
+      <div class="col-md-6">
+        <label>Descrição</label>
+        <input type="text" class="form-control" formControlName="descricao">
+      </div>
+      <div class="col-md-6">
+        <label>Imagem</label>
+        <input type="file" class="form-control" (change)="selecionarImagem($event)">
+      </div>
+    </div>
+    <button class="btn btn-primary mt-3">Salvar</button>
+  </form>
+
+  <div class="mb-3">
+    <input
+      type="text"
+      class="form-control"
+      placeholder="Buscar por nome do evento..."
+      [(ngModel)]="filtro"
+    />
+  </div>
+
+  <table class="table table-bordered">
+    <thead>
+      <tr>
+        <th>Nome</th>
+        <th>Data</th>
+        <th>Local</th>
+        <th>Descrição</th>
+        <th>Imagem</th>
+        <th>Ações</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let evento of eventos | filtroEvento:filtro">
+        <td>{{ evento.nome }}</td>
+        <td>{{ evento.data | date }}</td>
+        <td>{{ evento.local }}</td>
+        <td>{{ evento.descricao }}</td>
+        <td>
+          <img *ngIf="evento.imagem" [src]="'https://eventos-api-fullstack.onrender.com/uploads/' + evento.imagem" width="80">
+        </td>
+        <td>
+          <button class="btn btn-sm btn-info" (click)="editarEvento(evento)">Editar</button>
+          <button class="btn btn-sm btn-danger" (click)="excluirEvento(evento.id!)">Excluir</button>
+        </td>
+      </tr>
+    </tbody>
+  </table>
+</div>

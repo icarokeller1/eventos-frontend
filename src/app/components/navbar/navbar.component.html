@@ -1,0 +1,3 @@
+<button *ngIf="auth.isLoggedIn()" (click)="auth.logout(); router.navigate(['/login'])" class="btn btn-danger">
+  Logout
+</button>
