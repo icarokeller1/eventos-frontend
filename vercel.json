@@ -1,4 +1,6 @@
 {
+  "outputDirectory": "dist/eventos-frontend/browser",
+  "framework": "other",
   "routes": [
     { "handle": "filesystem" },
     { "src": "/.*", "dest": "/index.html" }
