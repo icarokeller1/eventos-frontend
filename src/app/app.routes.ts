@@ -16,6 +16,11 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'eventos/:id/editar',
+    loadComponent: () => import('./eventos/form-evento.component').then(m => m.FormEventoComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'eventos/novo',
     loadComponent: () => import('./eventos/form-evento.component').then(m => m.FormEventoComponent),
     canActivate: [AuthGuard]

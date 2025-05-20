@@ -15,4 +15,16 @@ export class EventoService {
   criar(formData: FormData): Observable<any> {
     return this.http.post(this.apiUrl, formData);
   }
+  
+  get(id: number) {
+    return this.http.get<any>(`${this.apiUrl}/${id}`);
+  }
+
+  atualizar(id: number, data: FormData) {
+    return this.http.put(`${this.apiUrl}/${id}`, data);
+  }
+
+  deletar(id: number) {
+    return this.http.delete(`${this.apiUrl}/${id}`);
+  }
 }

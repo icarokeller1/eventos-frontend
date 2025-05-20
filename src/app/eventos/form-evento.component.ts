@@ -5,6 +5,7 @@ import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { EventoService } from '../shared/services/evento.service';
 import { HttpErrorResponse } from '@angular/common/http';
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-form-evento',
@@ -78,6 +79,10 @@ export class FormEventoComponent {
   private fb      = inject(FormBuilder);
   private service = inject(EventoService);
   private router  = inject(Router);
+  private route = inject(ActivatedRoute);
+
+  id = 0;
+  editMode = signal(false);
 
   selectedFile: File | null = null;
 
@@ -92,6 +97,21 @@ export class FormEventoComponent {
   success   = signal(false);
   errorMsg  = signal<string | null>(null);
   submitted = signal(false);
+
+  ngOnInit() {
+    this.id = Number(this.route.snapshot.paramMap.get('id') || 0);
+    if (this.id) {
+      this.editMode.set(true);
+      this.service.get(this.id).subscribe(ev => {
+        const onlyDate = new Date(ev.data).toISOString().slice(0, 10);
+        this.form.patchValue({
+          ...ev,
+          data: onlyDate           // garante formato compatível
+        });
+        /* imagem opcional – só muda se o usuário escolher */
+      });
+    }
+  }
 
   onFileChange(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0] ?? null;
@@ -112,15 +132,13 @@ export class FormEventoComponent {
     this.errorMsg.set(null);
 
     /* chamada */
-    this.service.criar(fd).subscribe({
-      next: () => {
-        this.success.set(true);
-        setTimeout(() => this.router.navigateByUrl('/eventos'), 1000);
-      },
-      error: (err: HttpErrorResponse) => {
-        const msg = err.error?.message || `Erro ${err.status}: ${err.statusText}`;
-        this.errorMsg.set(msg);
-      },
+    this.loading.set(true);
+    const req$ = this.editMode() ? this.service.atualizar(this.id, fd)
+                                : this.service.criar(fd);
+
+    req$.subscribe({
+      next: () => { this.success.set(true); setTimeout(() => this.router.navigateByUrl('/eventos'), 800); },
+      error: err => this.errorMsg.set(err.error?.message || 'Erro'),
       complete: () => this.loading.set(false)
     });
   }
