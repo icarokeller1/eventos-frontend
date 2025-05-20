@@ -2,6 +2,7 @@ import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
 import { IngressoService } from '../shared/services/ingresso.service';
 import { EventoService } from '../shared/services/evento.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -73,9 +74,11 @@ import { HttpErrorResponse } from '@angular/common/http';
   `
 })
 export class FormIngressoComponent implements OnInit {
+  id = 0;
+  editMode = signal(false);
   form!: FormGroup;
   eventos: any[] = [];
-
+  private route          = inject(ActivatedRoute);
   private fb             = inject(FormBuilder);
   private ingressoSrv    = inject(IngressoService);
   private eventoSrv      = inject(EventoService);
@@ -88,6 +91,7 @@ export class FormIngressoComponent implements OnInit {
   submitted = signal(false);
 
   ngOnInit(): void {
+    this.id = Number(this.route.snapshot.paramMap.get('id') || 0);
     this.form = this.fb.group({
       tipo:       ['', Validators.required],
       preco:      [0, [Validators.required, Validators.min(0.01)]],
@@ -95,7 +99,11 @@ export class FormIngressoComponent implements OnInit {
       eventoId:   [null, Validators.required],
     });
 
-    this.eventoSrv.listar().subscribe({ next: evs => (this.eventos = evs) });
+    this.eventoSrv.listar().subscribe(e => (this.eventos = e));
+    if (this.id) {
+      this.editMode.set(true);
+      this.ingressoSrv.get(this.id).subscribe(i => this.form.patchValue(i));
+    }
   }
 
   onSubmit(): void {
@@ -105,15 +113,17 @@ export class FormIngressoComponent implements OnInit {
     this.loading.set(true);
     this.errorMsg.set(null);
 
-    this.ingressoSrv.criar(this.form.value).subscribe({
+    const req$ = this.editMode()
+      ? this.ingressoSrv.atualizar(this.id, this.form.value)
+      : this.ingressoSrv.criar(this.form.value);
+
+    req$.subscribe({
       next: () => {
         this.success.set(true);
-        setTimeout(() => this.router.navigateByUrl('/ingressos'), 1000);
+        setTimeout(() => this.router.navigateByUrl('/ingressos'), 800);
       },
-      error: (err: HttpErrorResponse) => {
-        const msg = err.error?.message || `Erro ${err.status}: ${err.statusText}`;
-        this.errorMsg.set(msg);
-      },
+      error: (e: HttpErrorResponse) =>
+        this.errorMsg.set(e.error?.message || `Erro ${e.status}`),
       complete: () => this.loading.set(false)
     });
   }

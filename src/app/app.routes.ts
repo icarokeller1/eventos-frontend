@@ -36,6 +36,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'ingressos/:id/editar',
+    loadComponent: () =>
+      import('./ingressos/form-ingresso.component').then(m => m.FormIngressoComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: 'comprar',
     loadComponent: () => import('./compras/comprar-ingresso.component').then(m => m.ComprarIngressoComponent),
     canActivate: [AuthGuard]

@@ -1,8 +1,7 @@
-// src/app/compras/comprar-ingresso.component.ts
 import { Component, inject, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators, FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';          // ⬅️ 1
 import { IngressoService } from '../shared/services/ingresso.service';
 import { CompraService } from '../shared/services/compra.service';
 import { HttpErrorResponse } from '@angular/common/http';
@@ -20,8 +19,10 @@ import { HttpErrorResponse } from '@angular/common/http';
       <!-- Ingresso -->
       <div class="mb-3">
         <label class="form-label">Ingresso</label>
-        <select class="form-select" formControlName="ingressoId">
-          <option [ngValue]="null" disabled selected>Selecione…</option>
+        <select class="form-select"
+                formControlName="ingressoId"
+                [disabled]="preSelecionado">
+          <option [ngValue]="null" disabled>Selecione…</option>
           <option *ngFor="let i of ingressos" [ngValue]="i.id">
             {{ i.tipo }} – {{ i.evento?.nome || 'Evento?' }}
           </option>
@@ -35,53 +36,66 @@ import { HttpErrorResponse } from '@angular/common/http';
       <!-- Quantidade -->
       <div class="mb-4">
         <label class="form-label">Quantidade</label>
-        <input type="number" class="form-control" formControlName="quantidade" min="1">
+        <input type="number" class="form-control"
+               formControlName="quantidade" min="1">
         <small class="text-danger"
                *ngIf="submitted() && form.controls['quantidade'].invalid">
           Quantidade mínima 1
         </small>
       </div>
 
-      <!-- Botão -->
       <button type="submit"
               class="btn btn-primary w-100"
               [disabled]="loading() || form.invalid">
         {{ loading() ? 'Processando…' : 'Comprar' }}
       </button>
 
-      <!-- Feedback -->
-      <div *ngIf="success()" class="alert alert-success mt-3">
-        Compra realizada com sucesso! Redirecionando…
-      </div>
-      <div *ngIf="errorMsg()" class="alert alert-danger mt-3">
-        {{ errorMsg() }}
-      </div>
+      <div *ngIf="success()"  class="alert alert-success mt-3">Compra realizada!</div>
+      <div *ngIf="errorMsg()" class="alert alert-danger  mt-3">{{ errorMsg() }}</div>
     </form>
   `
 })
 export class ComprarIngressoComponent implements OnInit {
   form!: FormGroup;
   ingressos: any[] = [];
+  preSelecionado = false;                                           // ⬅️ 2
 
   private fb          = inject(FormBuilder);
   private ingressoSrv = inject(IngressoService);
   private compraSrv   = inject(CompraService);
+  private route       = inject(ActivatedRoute);                     // ⬅️ 3
   private router      = inject(Router);
 
-  /* sinais UX */
   loading   = signal(false);
   success   = signal(false);
   errorMsg  = signal<string | null>(null);
   submitted = signal(false);
 
   ngOnInit(): void {
+    /* cria form vazio */
     this.form = this.fb.group({
       ingressoId: [null, Validators.required],
-      quantidade: [1, [Validators.required, Validators.min(1)]],
+      quantidade: [1,   [Validators.required, Validators.min(1)]],
     });
 
+    /* lê query ?ingressoId=123 */
+    const idFromQuery = Number(this.route.snapshot.queryParamMap.get('ingressoId')); // ⬅️ 4
+    if (idFromQuery) {
+      this.preSelecionado = true;
+      this.form.patchValue({ ingressoId: idFromQuery });
+    }
+
+    /* carrega lista de ingressos */
     this.ingressoSrv.listar().subscribe({
-      next: data => (this.ingressos = data)
+      next: data => (this.ingressos = data),
+      complete: () => {
+        /* se id veio na URL mas não existe na lista, limpa seleção */
+        if (this.preSelecionado &&
+            !this.ingressos.some(i => i.id === idFromQuery)) {
+          this.preSelecionado = false;
+          this.form.patchValue({ ingressoId: null });
+        }
+      }
     });
   }
 
@@ -95,12 +109,10 @@ export class ComprarIngressoComponent implements OnInit {
     this.compraSrv.comprar(this.form.value).subscribe({
       next: () => {
         this.success.set(true);
-        setTimeout(() => this.router.navigateByUrl('/'), 1000);
+        setTimeout(() => this.router.navigateByUrl('/'), 800);
       },
-      error: (err: HttpErrorResponse) => {
-        const msg = err.error?.message || `Erro ${err.status}: ${err.statusText}`;
-        this.errorMsg.set(msg);
-      },
+      error: (e: HttpErrorResponse) =>
+        this.errorMsg.set(e.error?.message || `Erro ${e.status}`),
       complete: () => this.loading.set(false)
     });
   }
