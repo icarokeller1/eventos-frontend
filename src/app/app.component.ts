@@ -1,6 +1,7 @@
+// src/app/app.component.ts
 import { Component, inject } from '@angular/core';
-import { RouterModule } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { RouterModule } from '@angular/router';
 import { AuthService } from './shared/services/auth.service';
 
 @Component({
@@ -9,36 +10,51 @@ import { AuthService } from './shared/services/auth.service';
   imports: [CommonModule, RouterModule],
   template: `
     <!-- Barra superior -->
-    <nav class="navbar navbar-expand-lg navbar-dark bg-primary mb-4">
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary">
       <div class="container-fluid">
-        <span class="navbar-brand">Eventos Frontend</span>
 
-        <!-- Navegação aparece só quando o usuário está logado -->
-        <div *ngIf="auth.isAuthenticated()" class="collapse navbar-collapse">
+        <!-- Logo / título -->
+        <a class="navbar-brand" routerLink="/">Eventos Frontend</a>
+
+        <!-- Menu colapsável (mobile) -->
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse"
+                data-bs-target="#navMain" aria-controls="navMain"
+                aria-expanded="false" aria-label="Toggle navigation">
+          <span class="navbar-toggler-icon"></span>
+        </button>
+
+        <!-- Links -->
+        <div id="navMain" class="collapse navbar-collapse" *ngIf="auth.isAuthenticated()">
           <ul class="navbar-nav me-auto mb-2 mb-lg-0">
-            <li class="nav-item"><a class="nav-link" routerLink="/eventos">Eventos</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="/eventos/novo">Novo Evento</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="/ingressos">Ingressos</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="/ingressos/novo">Novo Ingresso</a></li>
-            <li class="nav-item"><a class="nav-link" routerLink="/comprar">Comprar</a></li>
+            <li class="nav-item">
+              <a routerLink="/eventos" routerLinkActive="active" class="nav-link">Eventos</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/eventos/novo" routerLinkActive="active" class="nav-link">Novo Evento</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/ingressos" routerLinkActive="active" class="nav-link">Ingressos</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/ingressos/novo" routerLinkActive="active" class="nav-link">Novo Ingresso</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/comprar" routerLinkActive="active" class="nav-link">Comprar</a>
+            </li>
           </ul>
 
-          <!-- Botão de logout agora visível -->
           <button class="btn btn-outline-light btn-sm" (click)="logout()">Sair</button>
         </div>
       </div>
     </nav>
 
-    <!-- Área principal -->
-    <main class="container">
+    <!-- Conteúdo -->
+    <main class="container my-4">
       <router-outlet></router-outlet>
     </main>
   `
 })
 export class AppComponent {
   auth = inject(AuthService);
-
-  logout(): void {
-    this.auth.logout();
-  }
+  logout() { this.auth.logout(); }
 }
