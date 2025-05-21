@@ -101,6 +101,7 @@ export class RegisterComponent {
       error: (err: HttpErrorResponse) => {
         const msg = err.error?.message || 'Erro ao registrar usuário';
         this.errorMsg.set(msg);
+        this.loading.set(false);
       },
       complete: () => this.loading.set(false)
     });
