@@ -47,6 +47,12 @@ export const routes: Routes = [
     canActivate: [AuthGuard]
   },
   {
+    path: 'compras',
+    loadComponent: () =>
+      import('./compras/listar-compras.component').then(m => m.ListarComprasComponent),
+    canActivate: [AuthGuard]
+  },
+  {
     path: '',
     redirectTo: 'login',
     pathMatch: 'full'

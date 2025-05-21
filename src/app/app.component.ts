@@ -39,7 +39,10 @@ import { AuthService } from './shared/services/auth.service';
               <a routerLink="/ingressos/novo" routerLinkActive="active" class="nav-link">Novo Ingresso</a>
             </li>
             <li class="nav-item">
-              <a routerLink="/comprar" routerLinkActive="active" class="nav-link">Comprar</a>
+              <a routerLink="/compras" routerLinkActive="active" class="nav-link">Compras</a>
+            </li>
+            <li class="nav-item">
+              <a routerLink="/comprar" routerLinkActive="active" class="nav-link">Nova Compra</a>
             </li>
           </ul>
 

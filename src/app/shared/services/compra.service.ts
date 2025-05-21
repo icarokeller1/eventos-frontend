@@ -11,4 +11,6 @@ export class CompraService {
   comprar(data: { ingressoId: number; quantidade: number }): Observable<any> {
     return this.http.post(this.apiUrl, data);
   }
+
+  listar() { return this.http.get<any[]>(this.apiUrl); }
 }
