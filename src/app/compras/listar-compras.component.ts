@@ -11,7 +11,6 @@ import { FiltroCompraPipe } from '../shared/pipes/filtro-compra.pipe';
   template: `
     <h2 class="text-center mb-4">Compras realizadas</h2>
 
-    <!-- filtros -->
     <div class="row g-3 mb-4">
       <div class="col-md-6">
         <input class="form-control" placeholder="Filtrar por evento"
@@ -23,7 +22,6 @@ import { FiltroCompraPipe } from '../shared/pipes/filtro-compra.pipe';
       </div>
     </div>
 
-    <!-- tabela -->
     <div class="table-responsive">
       <table class="table table-striped align-middle">
         <thead>
@@ -39,9 +37,9 @@ import { FiltroCompraPipe } from '../shared/pipes/filtro-compra.pipe';
           <tr *ngFor="let c of comprasFiltradas(); trackBy: trackById">
             <td>{{ c.ingresso?.evento?.nome }}</td>
             <td>{{ c.ingresso?.tipo || '—' }}</td>
-            <td>{{ c.usuario?.nome  || '—' }}</td>
+            <td>{{ c.email  || '—' }}</td>
             <td>{{ c.quantidade }}</td>
-            <td>{{ c.createdAt | date:'short' }}</td>
+            <td>{{ c.createdAt | date:"dd/MM/yyyy" }}</td>
           </tr>
           <tr *ngIf="comprasFiltradas().length === 0">
             <td colspan="5" class="text-center text-muted">Nenhuma compra encontrada.</td>

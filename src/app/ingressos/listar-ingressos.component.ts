@@ -13,13 +13,11 @@ import { Router } from '@angular/router';
     <div class="card shadow-sm mx-auto" style="max-width: 700px;">
       <ul class="list-group list-group-flush">
 
-        <!-- item -->
         <li *ngFor="let i of ingressos(); trackBy: trackById"
             class="list-group-item">
 
           <div class="d-flex flex-column flex-md-row justify-content-between align-items-md-center gap-2">
 
-            <!-- bloco esquerdo -->
             <div class="flex-grow-1 text-center text-md-start">
               <div class="fw-bold fs-6">{{ i.tipo }}</div>
               <small class="text-muted">
@@ -27,7 +25,6 @@ import { Router } from '@angular/router';
               </small>
             </div>
 
-            <!-- quantidade + preço -->
             <div class="text-center text-md-end">
               <span class="badge me-2"
                     [class.bg-success]="i.quantidade > 0"
@@ -39,16 +36,20 @@ import { Router } from '@angular/router';
               </span>
             </div>
 
-            <!-- botões -->
             <div class="d-flex flex-wrap gap-2">
-              <button class="btn btn-sm btn-success"  (click)="comprar(i)">Comprar</button>
+              <button  class="btn btn-sm"
+                      [class.btn-success]="i.quantidade > 0"
+                      [class.btn-secondary]="i.quantidade === 0"
+                      [disabled]="i.quantidade === 0"
+                      (click)="comprar(i)">
+                Comprar
+              </button>
               <button class="btn btn-sm btn-primary"  (click)="editar(i)">Editar</button>
               <button class="btn btn-sm btn-danger"   (click)="deletar(i)">Excluir</button>
             </div>
           </div>
         </li>
 
-        <!-- vazio -->
         <li class="list-group-item text-center text-muted"
             *ngIf="ingressos().length === 0">
           Nenhum ingresso cadastrado.

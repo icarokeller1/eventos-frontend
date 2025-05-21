@@ -17,7 +17,6 @@ import { HttpErrorResponse } from '@angular/common/http';
     <form class="mx-auto" style="max-width: 500px;"
           [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <!-- Tipo -->
       <div class="mb-3">
         <label class="form-label">Tipo</label>
         <input type="text" class="form-control" formControlName="tipo">
@@ -26,7 +25,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Preço -->
       <div class="mb-3">
         <label class="form-label">Preço (R$)</label>
         <input type="number" class="form-control" formControlName="preco" step="0.01" min="0">
@@ -35,7 +33,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Quantidade -->
       <div class="mb-3">
         <label class="form-label">Quantidade</label>
         <input type="number" class="form-control" formControlName="quantidade" min="1">
@@ -44,7 +41,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Evento -->
       <div class="mb-4">
         <label class="form-label">Evento</label>
         <select class="form-select" formControlName="eventoId">
@@ -56,14 +52,12 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Botão -->
       <button type="submit"
               class="btn btn-primary w-100"
               [disabled]="loading() || form.invalid">
         {{ loading() ? 'Salvando…' : 'Salvar' }}
       </button>
 
-      <!-- Feedback -->
       <div *ngIf="success()" class="alert alert-success mt-3">
         Ingresso criado! Redirecionando…
       </div>
@@ -84,7 +78,6 @@ export class FormIngressoComponent implements OnInit {
   private eventoSrv      = inject(EventoService);
   private router         = inject(Router);
 
-  /* sinais de UX */
   loading   = signal(false);
   success   = signal(false);
   errorMsg  = signal<string | null>(null);

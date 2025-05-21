@@ -22,13 +22,11 @@ import { Router } from '@angular/router';
       <li *ngFor="let evento of eventosFiltrados(); trackBy: trackById"
           class="list-group-item d-flex justify-content-between align-items-start">
 
-        <!-- Info -->
         <div>
           <div class="fw-bold">{{ evento.nome }}</div>
-          {{ evento.local }} – {{ evento.data | date:'shortDate':'UTC' }}
+          {{ evento.local }} – {{ evento.data | date:"dd/MM/yyyy" }}
         </div>
 
-        <!-- Ações -->
         <div>
           <button class="btn btn-sm btn-primary me-1" (click)="editar(evento)">Editar</button>
           <button class="btn btn-sm btn-danger"  (click)="deletar(evento)">Excluir</button>
@@ -56,7 +54,6 @@ export class ListarEventosComponent {
     });
   }
 
-  /* ---------- ações ---------- */
   editar(ev: any) {
     this.router.navigate(['/eventos', ev.id, 'editar']);
   }
@@ -68,6 +65,5 @@ export class ListarEventosComponent {
     });
   }
 
-  /* ---------- performance ---------- */
   trackById(_: number, ev: any) { return ev.id; }
 }

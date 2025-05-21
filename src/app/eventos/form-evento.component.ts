@@ -1,4 +1,3 @@
-// src/app/eventos/form-evento.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
@@ -17,7 +16,6 @@ import { ActivatedRoute } from '@angular/router';
     <form class="mx-auto" style="max-width: 500px;"
           [formGroup]="form" (ngSubmit)="onSubmit()" enctype="multipart/form-data">
 
-      <!-- Nome -->
       <div class="mb-3">
         <label class="form-label">Nome</label>
         <input type="text" class="form-control" formControlName="nome">
@@ -26,7 +24,6 @@ import { ActivatedRoute } from '@angular/router';
         </small>
       </div>
 
-      <!-- Data -->
       <div class="mb-3">
         <label class="form-label">Data</label>
         <input type="date" class="form-control" formControlName="data">
@@ -35,7 +32,6 @@ import { ActivatedRoute } from '@angular/router';
         </small>
       </div>
 
-      <!-- Local -->
       <div class="mb-3">
         <label class="form-label">Local</label>
         <input type="text" class="form-control" formControlName="local">
@@ -44,13 +40,11 @@ import { ActivatedRoute } from '@angular/router';
         </small>
       </div>
 
-      <!-- Descrição -->
       <div class="mb-3">
         <label class="form-label">Descrição</label>
         <textarea rows="3" class="form-control" formControlName="descricao"></textarea>
       </div>
 
-      <!-- Imagem -->
       <div class="mb-4">
         <label class="form-label">Imagem</label>
         <input type="file" class="form-control" (change)="onFileChange($event)">
@@ -65,7 +59,6 @@ import { ActivatedRoute } from '@angular/router';
         {{ loading() ? 'Salvando…' : 'Salvar' }}
       </button>
 
-      <!-- Alertas -->
       <div *ngIf="success()" class="alert alert-success mt-3">
         Evento criado com sucesso! Redirecionando…
       </div>
@@ -106,9 +99,8 @@ export class FormEventoComponent {
         const onlyDate = new Date(ev.data).toISOString().slice(0, 10);
         this.form.patchValue({
           ...ev,
-          data: onlyDate           // garante formato compatível
+          data: onlyDate
         });
-        /* imagem opcional – só muda se o usuário escolher */
       });
     }
   }
@@ -122,16 +114,13 @@ export class FormEventoComponent {
     this.submitted.set(true);
     if (this.form.invalid || !this.selectedFile) return;
 
-    /* monta payload */
     const fd = new FormData();
     Object.entries(this.form.value).forEach(([k, v]) => v && fd.append(k, v));
     fd.append('imagem', this.selectedFile);
 
-    /* feedback UX */
     this.loading.set(true);
     this.errorMsg.set(null);
 
-    /* chamada */
     this.loading.set(true);
     const req$ = this.editMode() ? this.service.atualizar(this.id, fd)
                                 : this.service.criar(fd);

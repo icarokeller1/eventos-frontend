@@ -16,7 +16,6 @@ import { HttpErrorResponse } from '@angular/common/http';
     <form class="mx-auto" style="max-width: 500px;"
           [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <!-- Ingresso -->
       <div class="mb-3">
         <label class="form-label">Ingresso</label>
         <select class="form-select"
@@ -33,7 +32,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Quantidade -->
       <div class="mb-4">
         <label class="form-label">Quantidade</label>
         <input type="number" class="form-control"
@@ -58,12 +56,12 @@ import { HttpErrorResponse } from '@angular/common/http';
 export class ComprarIngressoComponent implements OnInit {
   form!: FormGroup;
   ingressos: any[] = [];
-  preSelecionado = false;                                           // ⬅️ 2
+  preSelecionado = false;
 
   private fb          = inject(FormBuilder);
   private ingressoSrv = inject(IngressoService);
   private compraSrv   = inject(CompraService);
-  private route       = inject(ActivatedRoute);                     // ⬅️ 3
+  private route       = inject(ActivatedRoute);
   private router      = inject(Router);
 
   loading   = signal(false);
@@ -72,20 +70,17 @@ export class ComprarIngressoComponent implements OnInit {
   submitted = signal(false);
 
   ngOnInit(): void {
-    /* cria form vazio */
     this.form = this.fb.group({
       ingressoId: [null, Validators.required],
       quantidade: [1,   [Validators.required, Validators.min(1)]],
     });
 
-    /* lê query ?ingressoId=123 */
-    const idFromQuery = Number(this.route.snapshot.queryParamMap.get('ingressoId')); // ⬅️ 4
+    const idFromQuery = Number(this.route.snapshot.queryParamMap.get('ingressoId'));
     if (idFromQuery) {
       this.preSelecionado = true;
       this.form.patchValue({ ingressoId: idFromQuery });
     }
 
-    /* carrega lista de ingressos */
     this.ingressoSrv.listar().subscribe({
       next: data => (this.ingressos = data),
       complete: () => {
@@ -109,10 +104,16 @@ export class ComprarIngressoComponent implements OnInit {
     this.compraSrv.comprar(this.form.value).subscribe({
       next: () => {
         this.success.set(true);
-        setTimeout(() => this.router.navigateByUrl('/'), 800);
+        setTimeout(() => this.router.navigateByUrl('/compras'), 800);
       },
-      error: (e: HttpErrorResponse) =>
-        this.errorMsg.set(e.error?.message || `Erro ${e.status}`),
+      error: (e: HttpErrorResponse) => {
+      if (e.status === 400) {
+        this.errorMsg.set(e.error?.error ?? 'Erro de validação.');
+      } else {
+        this.errorMsg.set(e.error?.message || `Erro ${e.status}: ${e.statusText}`);
+      }
+      this.loading.set(false);
+    },
       complete: () => this.loading.set(false)
     });
   }
