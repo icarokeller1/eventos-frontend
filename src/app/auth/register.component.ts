@@ -1,4 +1,3 @@
-// src/app/auth/register.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -16,7 +15,6 @@ import { HttpErrorResponse } from '@angular/common/http';
     <form class="mx-auto" style="max-width: 400px;"
           [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <!-- Nome -->
       <div class="mb-3">
         <label class="form-label">Nome</label>
         <input type="text" class="form-control" formControlName="nome">
@@ -26,7 +24,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Email -->
       <div class="mb-3">
         <label class="form-label">Email</label>
         <input type="email" class="form-control" formControlName="email">
@@ -36,7 +33,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Senha -->
       <div class="mb-4">
         <label class="form-label">Senha</label>
         <input type="password" class="form-control" formControlName="senha">
@@ -46,14 +42,12 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Botão -->
       <button type="submit"
               class="btn btn-primary w-100"
               [disabled]="loading() || form.invalid">
         {{ loading() ? 'Cadastrando…' : 'Cadastrar' }}
       </button>
 
-      <!-- Feedback -->
       <div *ngIf="success()" class="alert alert-success mt-3">
         Usuário criado! Redirecionando para login…
       </div>

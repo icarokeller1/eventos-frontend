@@ -24,7 +24,7 @@ import { Router } from '@angular/router';
 
         <div>
           <div class="fw-bold">{{ evento.nome }}</div>
-          {{ evento.local }} – {{ evento.data | date:"dd/MM/yyyy" }}
+          {{ evento.local }} - {{ evento.data | date:"dd/MM/yyyy" }}
         </div>
 
         <div>
@@ -39,8 +39,8 @@ export class ListarEventosComponent {
   private service = inject(EventoService);
   private router = inject(Router);
 
-  filtro   = signal('');
-  eventos  = signal<any[]>([]);
+  filtro = signal('');
+  eventos = signal<any[]>([]);
 
   eventosFiltrados = computed(() =>
     this.filtro().length

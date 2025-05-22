@@ -72,24 +72,24 @@ export class FormIngressoComponent implements OnInit {
   editMode = signal(false);
   form!: FormGroup;
   eventos: any[] = [];
-  private route          = inject(ActivatedRoute);
-  private fb             = inject(FormBuilder);
-  private ingressoSrv    = inject(IngressoService);
-  private eventoSrv      = inject(EventoService);
-  private router         = inject(Router);
+  private route = inject(ActivatedRoute);
+  private fb = inject(FormBuilder);
+  private ingressoSrv = inject(IngressoService);
+  private eventoSrv = inject(EventoService);
+  private router = inject(Router);
 
-  loading   = signal(false);
-  success   = signal(false);
-  errorMsg  = signal<string | null>(null);
+  loading = signal(false);
+  success = signal(false);
+  errorMsg = signal<string | null>(null);
   submitted = signal(false);
 
   ngOnInit(): void {
     this.id = Number(this.route.snapshot.paramMap.get('id') || 0);
     this.form = this.fb.group({
-      tipo:       ['', Validators.required],
-      preco:      [0, [Validators.required, Validators.min(0.01)]],
+      tipo: ['', Validators.required],
+      preco: [0, [Validators.required, Validators.min(0.01)]],
       quantidade: [0, [Validators.required, Validators.min(1)]],
-      eventoId:   [null, Validators.required],
+      eventoId: [null, Validators.required],
     });
 
     this.eventoSrv.listar().subscribe(e => (this.eventos = e));

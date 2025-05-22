@@ -1,4 +1,3 @@
-// src/app/auth/login.component.ts
 import { Component, inject, signal } from '@angular/core';
 import { ReactiveFormsModule, FormBuilder, Validators } from '@angular/forms';
 import { Router, RouterModule } from '@angular/router';
@@ -16,7 +15,6 @@ import { HttpErrorResponse } from '@angular/common/http';
     <form class="mx-auto" style="max-width: 400px;"
           [formGroup]="form" (ngSubmit)="onSubmit()">
 
-      <!-- Email -->
       <div class="mb-3">
         <label class="form-label">Email</label>
         <input type="email" class="form-control" formControlName="email">
@@ -26,7 +24,6 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Senha -->
       <div class="mb-4">
         <label class="form-label">Senha</label>
         <input type="password" class="form-control" formControlName="senha">
@@ -36,14 +33,12 @@ import { HttpErrorResponse } from '@angular/common/http';
         </small>
       </div>
 
-      <!-- Botão -->
       <button type="submit"
               class="btn btn-primary w-100"
               [disabled]="loading() || form.invalid">
         {{ loading() ? 'Entrando…' : 'Entrar' }}
       </button>
 
-      <!-- Alertas -->
       <div *ngIf="errorMsg()" class="alert alert-danger mt-3">
         {{ errorMsg() }}
       </div>

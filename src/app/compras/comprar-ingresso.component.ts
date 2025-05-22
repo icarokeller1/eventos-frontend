@@ -58,15 +58,15 @@ export class ComprarIngressoComponent implements OnInit {
   ingressos: any[] = [];
   preSelecionado = false;
 
-  private fb          = inject(FormBuilder);
+  private fb = inject(FormBuilder);
   private ingressoSrv = inject(IngressoService);
-  private compraSrv   = inject(CompraService);
-  private route       = inject(ActivatedRoute);
-  private router      = inject(Router);
+  private compraSrv = inject(CompraService);
+  private route = inject(ActivatedRoute);
+  private router = inject(Router);
 
-  loading   = signal(false);
-  success   = signal(false);
-  errorMsg  = signal<string | null>(null);
+  loading = signal(false);
+  success = signal(false);
+  errorMsg = signal<string | null>(null);
   submitted = signal(false);
 
   ngOnInit(): void {

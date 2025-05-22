@@ -69,9 +69,9 @@ import { ActivatedRoute } from '@angular/router';
   `
 })
 export class FormEventoComponent {
-  private fb      = inject(FormBuilder);
+  private fb = inject(FormBuilder);
   private service = inject(EventoService);
-  private router  = inject(Router);
+  private router = inject(Router);
   private route = inject(ActivatedRoute);
 
   id = 0;
@@ -80,15 +80,15 @@ export class FormEventoComponent {
   selectedFile: File | null = null;
 
   form = this.fb.group({
-    nome:  ['', Validators.required],
-    data:  ['', Validators.required],
+    nome: ['', Validators.required],
+    data: ['', Validators.required],
     local: ['', Validators.required],
     descricao: ['']
   });
 
-  loading   = signal(false);
-  success   = signal(false);
-  errorMsg  = signal<string | null>(null);
+  loading = signal(false);
+  success = signal(false);
+  errorMsg = signal<string | null>(null);
   submitted = signal(false);
 
   ngOnInit() {
