@@ -45,6 +45,10 @@ import { ActivatedRoute } from '@angular/router';
         <textarea rows="3" class="form-control" formControlName="descricao"></textarea>
       </div>
 
+      <div *ngIf="imagePreview()" class="mb-3 text-center">
+        <img [src]="imagePreview()" class="img-thumbnail" style="max-height: 200px">
+      </div>
+
       <div class="mb-4">
         <label class="form-label">Imagem</label>
         <input type="file" class="form-control" (change)="onFileChange($event)">
@@ -90,12 +94,14 @@ export class FormEventoComponent {
   success = signal(false);
   errorMsg = signal<string | null>(null);
   submitted = signal(false);
+  imagePreview = signal<string | null>(null);
 
   ngOnInit() {
     this.id = Number(this.route.snapshot.paramMap.get('id') || 0);
     if (this.id) {
       this.editMode.set(true);
       this.service.get(this.id).subscribe(ev => {
+        this.imagePreview.set(ev.imagem);
         const onlyDate = new Date(ev.data).toISOString().slice(0, 10);
         this.form.patchValue({
           ...ev,
@@ -108,6 +114,12 @@ export class FormEventoComponent {
   onFileChange(e: Event) {
     const file = (e.target as HTMLInputElement).files?.[0] ?? null;
     this.selectedFile = file;
+
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = () => this.imagePreview.set(reader.result as string);
+      reader.readAsDataURL(file);
+    }
   }
 
   onSubmit() {
